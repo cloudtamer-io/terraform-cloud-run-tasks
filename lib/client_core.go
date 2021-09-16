@@ -48,8 +48,6 @@ func (c *RequestClient) GET(urlPath string, returnData interface{}) error {
 		}
 	}
 
-	//out := make([]interface{}, 0)
-
 	pageURL := fmt.Sprintf("%s%s", c.HostURL, urlPath)
 
 	req, err := http.NewRequest("GET", pageURL, nil)
@@ -62,30 +60,10 @@ func (c *RequestClient) GET(urlPath string, returnData interface{}) error {
 		return err
 	}
 
-	//fmt.Println("Body:", string(body))
-
-	//page := make([]interface{}, 0)
-
 	err = json.Unmarshal(body, returnData)
 	if err != nil {
 		return fmt.Errorf("could not unmarshal response body: %v", string(body))
 	}
-
-	//out = append(out, page...)
-
-	// if returnData != nil {
-	// 	// Convert to bytes.
-	// 	b, err := json.Marshal(out)
-	// 	if err != nil {
-	// 		return fmt.Errorf("could not marshal response body: %v", err.Error())
-	// 	}
-
-	// 	// Unmarshal back to struct.
-	// 	err = json.Unmarshal(b, returnData)
-	// 	if err != nil {
-	// 		return fmt.Errorf("could not unmarshal response body: %v", string(b))
-	// 	}
-	// }
 
 	return nil
 }
@@ -117,8 +95,6 @@ func (c *RequestClient) POST(urlPath string, sendData interface{}, returnData in
 		return err
 	}
 
-	//fmt.Println("Body:", string(body))
-
 	err = json.Unmarshal(body, returnData)
 	if err != nil {
 		return fmt.Errorf("could not unmarshal response body: %v", string(body))
@@ -148,8 +124,6 @@ func (c *RequestClient) PUT(urlPath string, returnData interface{}) error {
 	if err != nil {
 		return err
 	}
-
-	//fmt.Println("Body:", string(body))
 
 	err = json.Unmarshal(body, returnData)
 	if err != nil {
@@ -189,8 +163,6 @@ func (c *RequestClient) PATCH(urlPath string, sendData interface{}, returnData i
 	if err != nil {
 		return err
 	}
-
-	//fmt.Println("Body:", string(body))
 
 	err = json.Unmarshal(body, returnData)
 	if err != nil {
@@ -238,11 +210,6 @@ func (c *RequestClient) doRequest(req *http.Request) ([]byte, int, Pagination, e
 	if err != nil {
 		return nil, 0, Pagination{}, err
 	}
-
-	// fmt.Println("HEADERS:", res.Header)
-	// fmt.Println("Total:", res.Header.Get("X-Total"))
-	// fmt.Println("Pages:", res.Header.Get("X-Total-Pages"))
-	// fmt.Println("Next:", res.Header.Get("X-Next-Page"))
 
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
 		return nil, res.StatusCode, Pagination{}, fmt.Errorf("url: %s, method: %s, status: %d, body: %s", req.URL.String(), req.Method, res.StatusCode, body)
