@@ -123,6 +123,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 		sendSavings(w, ct, tf, payload, cturl, projectID)
 	case "compliance":
 		sendCompliance(w, ct, tf, payload, cturl, projectID)
+	default:
+		fmt.Println("No action matching:", action)
 	}
 }
 
