@@ -8,10 +8,13 @@ run:
 build:
 	@go build -o tftask main.go
 
+# Deploy to AWS using CloudFormation.
 deploy:
-	GOOS=linux go build -o tftask main.go
-	aws cloudformation create-stack --stack-name tftask --template-body file://cloudformation/ec2-deploy.json --parameters file://cloudformation/parameters.json
+	aws cloudformation create-stack --stack-name tftask --template-body file://cloudformation/ec2-deploy.json \
+	--parameters file://cloudformation/parameters.json \
+	--capabilities CAPABILITY_IAM
 
+# Test requires an SSH profile named 'tf' to test deploying to an AWS EC2 instance.
 test:
 	GOOS=linux go build -o tftask main.go
 	-ssh -Y tf pkill tftask

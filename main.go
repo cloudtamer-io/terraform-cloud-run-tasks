@@ -96,6 +96,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Change the token so it can send a status to the callback URL.
+	rc2.Token = payload.AccessToken
+
 	if len(projectID) == 0 {
 		log.Println("terraform cloud env variable missing: CLOUDTAMERIO_PROJECT")
 
@@ -114,9 +117,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Project ID:", projectID)
-
-	// Change the token so it can send a status to the callback URL.
-	rc2.Token = payload.AccessToken
 
 	switch action {
 	case "savings":

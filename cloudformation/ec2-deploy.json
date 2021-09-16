@@ -629,25 +629,7 @@
                         ]
                     }
                 ],
-                "Policies": [
-                    {
-                        "PolicyName": "ApplicationPolicy",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Sid": "RequiredForApp",
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "s3:*",
-                                        "sts:AssumeRole"
-                                    ],
-                                    "Resource": "*"
-                                }
-                            ]
-                        }
-                    }
-                ]
+                "Policies": []
             }
         },
         "InstanceProfile": {
