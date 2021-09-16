@@ -169,7 +169,14 @@ type ComplianceResponse struct {
 }
 
 func main() {
-	fmt.Println("Webhook running.")
+	port := "8080"
+
+	// If the port is passed as an argument, use it.
+	if len(os.Args) > 1 {
+		port = os.Args[1]
+	}
+
+	fmt.Println("Webhook running on port:", port)
 
 	mux := http.NewServeMux()
 
@@ -273,7 +280,7 @@ func main() {
 		}
 	})
 
-	log.Fatalln(http.ListenAndServe(":8080", mux))
+	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%v", port), mux))
 }
 
 func sendSavings(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCloudClient, payload *TFTaskRequest, cturl string, projectID string) {

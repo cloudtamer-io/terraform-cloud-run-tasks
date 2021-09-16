@@ -72,3 +72,4 @@ tftask
 
 # Ignore variables
 .envrc
+cloudformation/parameters.json

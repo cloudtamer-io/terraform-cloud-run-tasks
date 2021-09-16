@@ -11,7 +11,7 @@
                     "Parameters": [
                         "Namespace",
                         "AppVersion",
-                        "CTDeployS3Bucket",
+                        "DeployGithubRepo",
                         "AppAllowFromCIDR",
                         "AppURL",
                         "AppAPIKey",
@@ -35,16 +35,13 @@
                     "Parameters": [
                         "VPCId",
                         "PublicSubnet",
-                        "ElasticIP"
+                        "ElasticIPID"
                     ]
                 }
             ],
             "ParameterLabels": {
-                "AppVersion": {
-                    "default": "App Version"
-                },
-                "CTDeployS3Bucket": {
-                    "default": "S3 Bucket"
+                "DeployGithubRepo": {
+                    "default": "GitHub Repository"
                 },
                 "ImageId": {
                     "default": "Image ID"
@@ -73,7 +70,7 @@
                 "TerraformAPIKey": {
                     "default": "Terraform API Key"
                 },
-                "ElasticIP": {
+                "ElasticIPID": {
                     "default": "Elastic IP ID"
                 }
             }
@@ -82,12 +79,13 @@
     "Parameters": {
         "AppVersion": {
             "Type": "String",
-            "Description": "Version of app to install."
+            "Description": "Version of app to install. You must increment this to upgrade.",
+            "Default": "1.0"
         },
-        "CTDeployS3Bucket": {
+        "DeployGithubRepo": {
             "Type": "String",
-            "Default": "cloudtamer-release",
-            "Description": "S3 bucket where the deployment files exist.",
+            "Default": "https://github.com/cloudtamer-io/terraform-cloud-run-tasks/zipball/cft-deploy/",
+            "Description": "GitHub repository where the code is stored. Should end with: /zipball/BRANCH/",
             "MinLength": "1"
         },
         "ImageId": {
@@ -133,21 +131,23 @@
             "MinLength": "1"
         },
         "AppURL": {
-            "Description": "URL to the cloudtamer.io application.",
+            "Description": "URL to the cloudtamer.io application: https://cloudtamer.example.com",
             "Type": "String",
             "MinLength": "1"
         },
         "AppAPIKey": {
-            "Description": "cloudtamer.io API key.",
+            "Description": "cloudtamer.io API key: app_1_XXXXXXXXXXXXXX",
             "Type": "String",
-            "MinLength": "1"
+            "MinLength": "1",
+            "NoEcho": "true"
         },
         "TerraformAPIKey": {
             "Description": "Terraform workspace API key.",
             "Type": "String",
-            "MinLength": "1"
+            "MinLength": "1",
+            "NoEcho": "true"
         },
-        "ElasticIP": {
+        "ElasticIPID": {
             "Type": "String",
             "Description": "Elastic IP to attach to the node: eipalloc-xxxxxxxxxxxxx",
             "MinLength": "1"
@@ -353,41 +353,20 @@
                                             "mkdir -p /opt/webservice\n",
                                             "chmod 777 /opt/webservice -R\n",
                                             "cd /opt/webservice\n",
-                                            "",
+                                            "curl -O https://storage.googleapis.com/golang/go1.16.8.linux-amd64.tar.gz\n",
+                                            "tar -xvf go*.tar.gz\n",
+                                            "sudo mv go /usr/local\n",
+                                            "rm go1*\n",
+                                            "export PATH=$PATH:/usr/local/go/bin\n",
                                             {
                                                 "Fn::Join": [
                                                     "",
                                                     [
-                                                        "aws --region ",
-                                                        {
-                                                            "Ref": "AWS::Region"
-                                                        },
-                                                        " s3 cp s3://",
-                                                        {
-                                                            "Ref": "CTDeployS3Bucket"
-                                                        },
-                                                        "/private.key",
-                                                        " .\n"
-                                                    ]
-                                                ]
-                                            },
-                                            {
-                                                "Fn::Join": [
-                                                    "",
-                                                    [
-                                                        "aws --region ",
-                                                        {
-                                                            "Ref": "AWS::Region"
-                                                        },
-                                                        " s3 cp s3://",
-                                                        {
-                                                            "Ref": "CTDeployS3Bucket"
-                                                        },
-                                                        "/webservice-",
+                                                        "echo Loading version: ",
                                                         {
                                                             "Ref": "AppVersion"
                                                         },
-                                                        ".zip .\n"
+                                                        "\n"
                                                     ]
                                                 ]
                                             },
@@ -395,14 +374,22 @@
                                                 "Fn::Join": [
                                                     "",
                                                     [
-                                                        "unzip -o webservice-",
+                                                        "curl -L ",
                                                         {
-                                                            "Ref": "AppVersion"
+                                                            "Ref": "DeployGithubRepo"
                                                         },
-                                                        ".zip \n"
+                                                        " -o code.zip",
+                                                        "\n"
                                                     ]
                                                 ]
                                             },
+                                            "unzip code.zip\n",
+                                            "cd cloudtamer-io-terraform-cloud-run-tasks*\n",
+                                            "go build -o webgui\n",
+                                            "mv webgui ../\n",
+                                            "cd ..\n",
+                                            "rm -R cloudtamer-io-terraform-cloud-run-tasks*\n",
+                                            "rm code.zip\n",
                                             {
                                                 "Fn::Join": [
                                                     "",
@@ -466,17 +453,17 @@
                                                 "Fn::Join": [
                                                     "",
                                                     [
-                                                        "S3_BUCKET=",
-                                                        {
-                                                            "Ref": "CTDeployS3Bucket"
-                                                        },
-                                                        " COMMERCIAL_ANALYTICS_ACCT=",
+                                                        "CLOUDTAMERIO_URL=",
                                                         {
                                                             "Ref": "AppURL"
                                                         },
-                                                        " GOV_ANALYTICS_ACCT=",
+                                                        " CLOUDTAMERIO_APIKEY=",
                                                         {
                                                             "Ref": "AppAPIKey"
+                                                        },
+                                                        " TERRAFORM_APIKEY=",
+                                                        {
+                                                            "Ref": "TerraformAPIKey"
                                                         }
                                                     ]
                                                 ]
@@ -488,17 +475,17 @@
                                                 "Fn::Join": [
                                                     "",
                                                     [
-                                                        "S3_BUCKET=",
-                                                        {
-                                                            "Ref": "CTDeployS3Bucket"
-                                                        },
-                                                        " COMMERCIAL_ANALYTICS_ACCT=",
+                                                        "CLOUDTAMERIO_URL=",
                                                         {
                                                             "Ref": "AppURL"
                                                         },
-                                                        " GOV_ANALYTICS_ACCT=",
+                                                        " CLOUDTAMERIO_APIKEY=",
                                                         {
                                                             "Ref": "AppAPIKey"
+                                                        },
+                                                        " TERRAFORM_APIKEY=",
+                                                        {
+                                                            "Ref": "TerraformAPIKey"
                                                         }
                                                     ]
                                                 ]
@@ -678,7 +665,7 @@
             "Type": "AWS::EC2::EIPAssociation",
             "Properties": {
                 "AllocationId": {
-                    "Ref": "ElasticIP"
+                    "Ref": "ElasticIPID"
                 },
                 "InstanceId": {
                     "Ref": "EC2Instance"

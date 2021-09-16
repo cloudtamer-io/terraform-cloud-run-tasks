@@ -1,0 +1,54 @@
+[
+    {
+        "ParameterKey": "ElasticIPID",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "AppVersion",
+        "ParameterValue": "1.0"
+    },
+    {
+        "ParameterKey": "DeployGithubRepo",
+        "ParameterValue": "https://github.com/cloudtamer-io/terraform-cloud-run-tasks/zipball/cft-deploy/"
+    },
+    {
+        "ParameterKey": "ImageId",
+        "ParameterValue": "ami-087c17d1fe0178315"
+    },
+    {
+        "ParameterKey": "VPCId",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "KeyPair",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "AppURL",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "AppAPIKey",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.micro"
+    },
+    {
+        "ParameterKey": "PublicSubnet",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "AppAllowFromCIDR",
+        "ParameterValue": "0.0.0.0/0"
+    },
+    {
+        "ParameterKey": "Namespace",
+        "ParameterValue": "tftask"
+    },
+    {
+        "ParameterKey": "TerraformAPIKey",
+        "ParameterValue": ""
+    }
+]
