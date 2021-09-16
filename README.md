@@ -7,6 +7,6 @@ We have two event hooks available:
 - Savings Opportunities - shows the monthly forecast on a project as well as the cost savings available.
 - Compliance - shows the number of compliance findings on a project and will throw an error if there are any critical findings.
 
-This repository contains the code to generate a docker image for the run task.
+This repository contains the code to launch an EC2 instance to run the webhook.
 
 You can access the deployment guide [here](https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325).
