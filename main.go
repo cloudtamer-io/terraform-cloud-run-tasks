@@ -103,7 +103,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		log.Println("terraform cloud env variable missing: CLOUDTAMERIO_PROJECT")
 
 		tfresult := new(lib.TFResultRequest)
-		tfresult.Data.Attributes.URL = ""
+		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
 		tfresult.Data.Attributes.Status = "failed"
 		tfresult.Data.Attributes.Message = "You must set the environment variable, CLOUDTAMERIO_PROJECT, as a workspace variable."
 		payback := new(lib.TFTaskResponse)
