@@ -166,7 +166,7 @@ func sendSavings(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCloud
 	tfresult := new(lib.TFResultRequest)
 	tfresult.Data.Attributes.URL = fmt.Sprintf("%v/portal/project/%v/savings-opportunity", cturl, projectID)
 	tfresult.Data.Attributes.Status = "passed"
-	tfresult.Data.Attributes.Message = fmt.Sprintf("For project, Nimbus, the monthly forecast is $%v. You could be saving $%v per month through savings opportunities. Click Details to view them.", math.Round(savings.Data.CurrentMonthlyCost), math.Round(totalSavings))
+	tfresult.Data.Attributes.Message = fmt.Sprintf("For your cloudtamer.io project, the monthly forecast is $%v. You could be saving $%v per month through savings opportunities. Click Details to view them.", math.Round(savings.Data.CurrentMonthlyCost), math.Round(totalSavings))
 	payback := new(lib.TFTaskResponse)
 	err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
 	if err != nil {
@@ -224,7 +224,7 @@ func sendCompliance(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCl
 	tfresult.Data.Attributes.URL = fmt.Sprintf("%v/portal/project/%v/compliance", cturl, projectID)
 	tfresult.Data.Attributes.Status = "passed"
 
-	tfresult.Data.Attributes.Message = fmt.Sprintf("For project, Nimbus, there are %v compliance findings. | Critical: %v | High: %v | Medium: %v | Low: %v | Info: %v | Click Details to view them.", len(compliance.Data.Items), critical, high, medium, low, info)
+	tfresult.Data.Attributes.Message = fmt.Sprintf("For your cloudtamer.io project, there are %v compliance findings. | Critical: %v | High: %v | Medium: %v | Low: %v | Info: %v | Click Details to view them.", len(compliance.Data.Items), critical, high, medium, low, info)
 
 	if critical > 0 {
 		tfresult.Data.Attributes.Status = "failed"
