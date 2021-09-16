@@ -133,6 +133,18 @@ func sendSavings(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCloud
 	err := ct.GET(fmt.Sprintf("/v3/project/%v/spend/monthly", projectID), spend)
 	if err != nil {
 		log.Printf("error on getting spend: %v\n", err)
+
+		tfresult := new(lib.TFResultRequest)
+		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
+		tfresult.Data.Attributes.Status = "failed"
+		tfresult.Data.Attributes.Message = "Error getting spend. Please ensure your cloudtamer.io API key has not expired."
+		payback := new(lib.TFTaskResponse)
+		err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
+		if err != nil {
+			log.Printf("error on sending result: %v\n", err)
+			return
+		}
+
 		return
 	}
 
@@ -169,7 +181,19 @@ func sendCompliance(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCl
 	compliance := new(lib.ComplianceResponse)
 	err := ct.GET(fmt.Sprintf("/v4/compliance/finding?project_id=%v&finding_type=active", projectID), compliance)
 	if err != nil {
-		log.Printf("error on getting savings: %v\n", err)
+		log.Printf("error on getting compliance: %v\n", err)
+
+		tfresult := new(lib.TFResultRequest)
+		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
+		tfresult.Data.Attributes.Status = "failed"
+		tfresult.Data.Attributes.Message = "Error getting compliance information. Please ensure your cloudtamer.io API key has not expired."
+		payback := new(lib.TFTaskResponse)
+		err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
+		if err != nil {
+			log.Printf("error on sending result: %v\n", err)
+			return
+		}
+
 		return
 	}
 
