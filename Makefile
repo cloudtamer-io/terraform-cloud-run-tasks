@@ -10,7 +10,7 @@ build:
 
 # Deploy to AWS using CloudFormation.
 deploy:
-	aws cloudformation create-stack --stack-name tftask --template-body file://cloudformation/ec2-deploy.json \
+	aws cloudformation create-stack --stack-name tftask --template-body file://cloudformation/ec2-deploy.yaml \
 	--parameters file://cloudformation/parameters.json \
 	--capabilities CAPABILITY_IAM
 
