@@ -84,7 +84,7 @@
         },
         "DeployGithubRepo": {
             "Type": "String",
-            "Default": "https://github.com/cloudtamer-io/terraform-cloud-run-tasks/zipball/cft-deploy/",
+            "Default": "https://github.com/cloudtamer-io/terraform-cloud-run-tasks/zipball/main/",
             "Description": "GitHub repository where the code is stored. Should end with: /zipball/BRANCH/",
             "MinLength": "1"
         },
