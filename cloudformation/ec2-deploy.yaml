@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deploy application node for cloudtamer.io and Terraform Cloud integration.
+Description: Deploy application node for Kion and Terraform Cloud Run Task integration.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -95,11 +95,11 @@ Parameters:
     Default: tftask
     MinLength: '1'
   AppURL:
-    Description: 'URL to the cloudtamer.io application: https://cloudtamer.example.com'
+    Description: 'URL to the Kion application: https://kion.example.com'
     Type: String
     MinLength: '1'
   AppAPIKey:
-    Description: 'cloudtamer.io API key: app_1_XXXXXXXXXXXXXX'
+    Description: 'Kion API key: app_1_XXXXXXXXXXXXXX'
     Type: String
     MinLength: '1'
     NoEcho: 'true'
@@ -298,9 +298,9 @@ Resources:
                   - '            sudo '
                   - !Join
                     - ''
-                    - - CLOUDTAMERIO_URL=
+                    - - KION_URL=
                       - !Ref 'AppURL'
-                      - ' CLOUDTAMERIO_APIKEY='
+                      - ' KION_APIKEY='
                       - !Ref 'AppAPIKey'
                       - ' TERRAFORM_APIKEY='
                       - !Ref 'TerraformAPIKey'
@@ -309,9 +309,9 @@ Resources:
                   - '            sudo -u "$user" '
                   - !Join
                     - ''
-                    - - CLOUDTAMERIO_URL=
+                    - - KION_URL=
                       - !Ref 'AppURL'
-                      - ' CLOUDTAMERIO_APIKEY='
+                      - ' KION_APIKEY='
                       - !Ref 'AppAPIKey'
                       - ' TERRAFORM_APIKEY='
                       - !Ref 'TerraformAPIKey'

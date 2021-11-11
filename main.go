@@ -52,15 +52,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Payload: %v\n", string(b))
 	fmt.Fprint(w, "OK\n")
 
-	cturl := os.Getenv("CLOUDTAMERIO_URL")
+	cturl := os.Getenv("KION_URL")
 	if len(cturl) == 0 {
-		log.Println("env variable missing: CLOUDTAMERIO_URL")
+		log.Println("env variable missing: KION_URL")
 		return
 	}
 
-	ctapi := os.Getenv("CLOUDTAMERIO_APIKEY")
+	ctapi := os.Getenv("KION_APIKEY")
 	if len(ctapi) == 0 {
-		log.Println("env variable missing: CLOUDTAMERIO_APIKEY")
+		log.Println("env variable missing: KION_APIKEY")
 		return
 	}
 
@@ -87,7 +87,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	projectID := ""
 	for _, v := range vars.Data {
-		if v.Attributes.Key == "CLOUDTAMERIO_PROJECT" {
+		if v.Attributes.Key == "KION_PROJECT" {
 			if v.Attributes.Value != nil {
 				projectID = fmt.Sprint(v.Attributes.Value)
 			}
@@ -100,12 +100,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 	rc2.Token = payload.AccessToken
 
 	if len(projectID) == 0 {
-		log.Println("terraform cloud env variable missing: CLOUDTAMERIO_PROJECT")
+		log.Println("terraform cloud env variable missing: KION_PROJECT")
 
 		tfresult := new(lib.TFResultRequest)
-		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
+		tfresult.Data.Attributes.URL = "https://support.kion.io/hc/en-us/articles/4408728893325"
 		tfresult.Data.Attributes.Status = "failed"
-		tfresult.Data.Attributes.Message = "You must set the environment variable, CLOUDTAMERIO_PROJECT, as a workspace variable."
+		tfresult.Data.Attributes.Message = "You must set the environment variable, KION_PROJECT, as a workspace variable."
 		payback := new(lib.TFTaskResponse)
 		err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
 		if err != nil {
@@ -135,9 +135,9 @@ func sendSavings(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCloud
 		log.Printf("error on getting spend: %v\n", err)
 
 		tfresult := new(lib.TFResultRequest)
-		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
+		tfresult.Data.Attributes.URL = "https://support.kion.io/hc/en-us/articles/4408728893325"
 		tfresult.Data.Attributes.Status = "failed"
-		tfresult.Data.Attributes.Message = "Error getting spend. Please ensure your cloudtamer.io API key has not expired."
+		tfresult.Data.Attributes.Message = "Error getting spend. Please ensure your Kion API key has not expired."
 		payback := new(lib.TFTaskResponse)
 		err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
 		if err != nil {
@@ -166,7 +166,7 @@ func sendSavings(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCloud
 	tfresult := new(lib.TFResultRequest)
 	tfresult.Data.Attributes.URL = fmt.Sprintf("%v/portal/project/%v/savings-opportunity", cturl, projectID)
 	tfresult.Data.Attributes.Status = "passed"
-	tfresult.Data.Attributes.Message = fmt.Sprintf("For your cloudtamer.io project, the monthly forecast is $%v. You could be saving $%v per month through savings opportunities. Click Details to view them.", math.Round(savings.Data.CurrentMonthlyCost), math.Round(totalSavings))
+	tfresult.Data.Attributes.Message = fmt.Sprintf("For your Kion project, the monthly forecast is $%v. You could be saving $%v per month through savings opportunities. Click Details to view them.", math.Round(savings.Data.CurrentMonthlyCost), math.Round(totalSavings))
 	payback := new(lib.TFTaskResponse)
 	err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
 	if err != nil {
@@ -184,9 +184,9 @@ func sendCompliance(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCl
 		log.Printf("error on getting compliance: %v\n", err)
 
 		tfresult := new(lib.TFResultRequest)
-		tfresult.Data.Attributes.URL = "https://cloudtamer.zendesk.com/hc/en-us/articles/4408728893325"
+		tfresult.Data.Attributes.URL = "https://support.kion.io/hc/en-us/articles/4408728893325"
 		tfresult.Data.Attributes.Status = "failed"
-		tfresult.Data.Attributes.Message = "Error getting compliance information. Please ensure your cloudtamer.io API key has not expired."
+		tfresult.Data.Attributes.Message = "Error getting compliance information. Please ensure your Kion API key has not expired."
 		payback := new(lib.TFTaskResponse)
 		err = tf.PATCH(payload.TaskResultCallbackURL, tfresult, payback)
 		if err != nil {
@@ -224,7 +224,7 @@ func sendCompliance(w http.ResponseWriter, ct *lib.CTClient, tf *lib.TerraformCl
 	tfresult.Data.Attributes.URL = fmt.Sprintf("%v/portal/project/%v/compliance", cturl, projectID)
 	tfresult.Data.Attributes.Status = "passed"
 
-	tfresult.Data.Attributes.Message = fmt.Sprintf("For your cloudtamer.io project, there are %v compliance findings. | Critical: %v | High: %v | Medium: %v | Low: %v | Info: %v | Click Details to view them.", len(compliance.Data.Items), critical, high, medium, low, info)
+	tfresult.Data.Attributes.Message = fmt.Sprintf("For your Kion project, there are %v compliance findings. | Critical: %v | High: %v | Medium: %v | Low: %v | Info: %v | Click Details to view them.", len(compliance.Data.Items), critical, high, medium, low, info)
 
 	if critical > 0 {
 		tfresult.Data.Attributes.Status = "failed"

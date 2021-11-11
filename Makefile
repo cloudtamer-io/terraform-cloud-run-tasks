@@ -19,4 +19,4 @@ test:
 	GOOS=linux go build -o tftask main.go
 	-ssh -Y tf pkill tftask
 	scp ./tftask tf:/home/ec2-user/
-	ssh -Y tf CLOUDTAMERIO_URL=${CLOUDTAMERIO_URL} CLOUDTAMERIO_APIKEY=${CLOUDTAMERIO_APIKEY} TERRAFORM_APIKEY=${TERRAFORM_APIKEY} ./tftask
+	ssh -Y tf KION_URL=${KION_URL} KION_APIKEY=${KION_APIKEY} TERRAFORM_APIKEY=${TERRAFORM_APIKEY} ./tftask
